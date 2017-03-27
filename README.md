@@ -33,8 +33,8 @@ docker run -d --name proxydb -v C:/Users/mariu/Documents/Training/percona-wordpr
 docker run --name web1 -d -p 80:80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp wordpress
 ```
 
-<< finish and install >>
-COPY OUTPUT OF << docker exec -ti web1 cat /var/www/html/wp-config.php >> TO  .\percona-wordpress\wordpress\wp-config.php
+-> Complete UI install
+-> COPY OUTPUT OF `docker exec -ti web1 cat /var/www/html/wp-config.php` TO  `.\percona-wordpress\wordpress\wp-config.php`
 
 ## BUILD WEB DOCKER
 ```
