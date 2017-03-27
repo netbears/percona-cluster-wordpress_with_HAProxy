@@ -42,7 +42,7 @@ docker run --name web1 -d -p 80:80 --net=backend --link db1:db1 -e WORDPRESS_DB_
 docker build -t web .\percona-wordpress\wordpress
 ```
 
-## LUNACH WEB NODES
+## LAUNCH WEB NODES
 ```
 docker run --name web1 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
 docker run --name web2 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
