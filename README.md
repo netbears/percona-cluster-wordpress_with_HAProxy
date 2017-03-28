@@ -38,12 +38,13 @@ Then, to create the stack, follow these instructions:
 ### Connect to cluster
 ```
 cd kubernetes
-kubectl create namespace <insert-namespace-name-here>
-kubectl config set-context $(kubectl config current-context) --namespace=<insert-namespace-name-here>
+kubectl create namespace <namespace>
+kubectl config set-context $(kubectl config current-context) --namespace=<namespace>
 ```
 
 ### Create database
 ```
+gcloud compute disks create --size 50GB mysql-disk
 kubectl create -f replica-set-db-primary.yaml
 kubectl expose rs db-primary
 
@@ -55,6 +56,7 @@ kubectl get pods,services
 
 ### Create web servers
 ```
+gcloud compute disks create --size 50GB wordpress-disk
 kubectl create -f deployment-wordpress.yaml
 kubectl expose deployment web --type=LoadBalancer
 ```
