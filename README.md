@@ -29,7 +29,7 @@ If alerted that you need to remove existing `kubectl` applications, please do an
 If everything is working, then the following should connect you to your project and get kubernetes cluster info.
 
 ```
-gcloud container clusters get-credentials cluster-training --zone europe-west1-b --project trainingcluj-162910
+gcloud container clusters get-credentials <cluster-name> --zone europe-west1-b --project <project-name>
 kubectl cluster-info
 ```
 
