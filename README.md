@@ -5,7 +5,7 @@ This tutorial has been created in regards to 2 deployment methods : `docker-comp
 
 Please amend the volumes path according to your OS.
 
-`Docker-Advanced` presentation is available [here](path_to_file).
+`Docker-Advanced` presentation is available [here](https://github.com/NETBEARS-IT-Outsourcing/percona-cluster-wordpress_with_HAProxy/raw/master/Docker%20-%20Advanced.pdf).
 
 ## DOCKER COMPOSE
 
@@ -29,7 +29,7 @@ If alerted that you need to remove existing `kubectl` applications, please do an
 If everything is working, then the following should connect you to your project and get kubernetes cluster info.
 
 ```
-gcloud container clusters get-credentials cluster-training --zone europe-west1-b --project trainingcluj-162910
+gcloud container clusters get-credentials <cluster-name> --zone europe-west1-b --project <project-name>
 kubectl cluster-info
 ```
 
