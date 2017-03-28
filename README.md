@@ -39,7 +39,7 @@ docker run --name web2 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOS
 docker run --name web3 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/percona-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
 ```
 
-## ATTACH WEB NODES TO BACKEND NETWORK
+## ATTACH WEB NODES TO FRONTEND NETWORK
 ```
 docker network connect frontend web1
 docker network connect frontend web2
