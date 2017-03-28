@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: db-slave
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: backend
+      type: db
+      name: db-slave
+  template:
+    metadata:
+      labels:
+        tier: backend
+        type: db
+        name: db-slave
+    spec:
+      containers:
+      - name: db-slave
+        image: percona/percona-xtradb-cluster
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: XTRABACKUP_PASSWORD
+          value: root
+        - name: CLUSTER_JOIN
+          value: db-primary
+        - name: CLUSTER_NAME
+          value: dbcluster  
+        ports:
+        - containerPort: 3306
+          name: mysql
+        - containerPort: 4444
+          name: stt-snp-trn
+        - containerPort: 4567
+          name: repl-trf
+        - containerPort: 4568
+          name: incr-st-trn

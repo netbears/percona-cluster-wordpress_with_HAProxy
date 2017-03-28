@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: dbcluster
+spec:
+  selector:
+    tier: backend
+    type: db
+  ports:
+  - protocol: TCP
+    targetPort: 3306
+    port: 3306
+    name: mysql
+  - protocol: TCP
+    targetPort: 4444
+    port: 4444
+    name: stt-snp-trn
+  - protocol: TCP
+    targetPort: 4567
+    port: 4567
+    name: repl-trf
+  - protocol: TCP
+    targetPort: 4568
+    port: 4568
+    name: incr-st-trn

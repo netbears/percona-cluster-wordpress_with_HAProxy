@@ -1,62 +1,62 @@
-# percona-cluster-wordpress
-Deploy a Percona cluster behind a HA proxy to which connect 3 wordpress containers that have a HA proxy in front of them.
+# Wordpress with Percona Cluster
+Deploy a Percona cluster behind a Load Balancer to which multiple wordpress containers connect that have a Load Balancer in front of them.
 
-This tutorial has been created using `Docker under Windows 10 with Hyper-V`.
+This tutorial has been created in regards to 2 deployment methods : `docker-compose` and `kubernetes`.
+
 Please amend the volumes path according to your OS.
 
-## CLEAR WORKSPACE
+`Docker-Advanced` presentation is available [here](https://github.com/NETBEARS-IT-Outsourcing/percona-cluster-wordpress_with_HAProxy/raw/master/Docker%20-%20Advanced.pdf).
+
+## DOCKER COMPOSE
+
+To create the stack, all you need to do is:
 ```
-docker rm $(docker ps -a -q) -f
-docker rmi $(docker images -a -q) -f
+cd docker-compose
+docker-compose up
 ```
 
-### CREATE LOGICAL NETWORKS
+## KUBERNETES
+
+This tutorial assumes that you have first  performed the following steps:
+- Install [Google Cloud SDK](https://cloud.google.com/sdk/downloads)
+- Login to your existing project `gcloud init`
+- Install kubernetes with `gcloud components install kubectl`
+
+If alerted that you need to remove existing `kubectl` applications, please do and:
+- Add `KUBECONFIG` as environment variable with value `<user_home_dir>\.kube\config`
+- Run `gcloud auth application-default login`
+
+If everything is working, then the following should connect you to your project and get kubernetes cluster info.
+
 ```
-docker network create backend
-docker network create frontend
+gcloud container clusters get-credentials <cluster-name> --zone europe-west1-b --project <project-name>
+kubectl cluster-info
 ```
 
-## LAUNCH DATABASE NODES
+Then, to create the stack, follow these instructions:
+
+### Connect to cluster
 ```
-docker run --name db1 -d -p 3306 --net=backend  -e MYSQL_ROOT_PASSWORD=root  -e CLUSTER_NAME=cluster  -e XTRABACKUP_PASSWORD=root percona/percona-xtradb-cluster
-docker run --name db2 -d -p 3306 --net=backend --link db1:db1 -e MYSQL_ROOT_PASSWORD=root  -e CLUSTER_NAME=cluster -e CLUSTER_JOIN=db1  -e XTRABACKUP_PASSWORD=root percona/percona-xtradb-cluster
-docker run --name db3 -d -p 3306 --net=backend --link db1:db1 -e MYSQL_ROOT_PASSWORD=root  -e CLUSTER_NAME=cluster -e CLUSTER_JOIN=db1  -e XTRABACKUP_PASSWORD=root percona/percona-xtradb-cluster
+cd kubernetes
+kubectl create namespace <insert-namespace-name-here>
+kubectl config set-context $(kubectl config current-context) --namespace=<insert-namespace-name-here>
 ```
 
-## LAUNCH DB PROXY
+### Create database
 ```
-docker run -d --name proxydb -v C:/Users/mariu/Documents/Training/percona-wordpress/proxydb:/usr/local/etc/haproxy:ro -d -p 3306:3306 --net=backend --link db1:db1 --link db2:db2 --link db3:db3 haproxy:1.7
+kubectl create -f replica-set-db-primary.yaml
+kubectl expose rs db-primary
+
+# wait around 50 seconds
+kubectl create -f replica-set-db-slave.yaml
+kubectl create -f service-db-cluster.yaml
+kubectl get pods,services
 ```
 
-## POPULATE DATABASE
+### Create web servers
 ```
-docker run --name web1 -d -p 80:80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp wordpress
-```
-
--> Complete UI install
-
--> COPY OUTPUT OF `docker exec -ti web1 cat /var/www/html/wp-config.php` TO  `.\percona-wordpress\wordpress\wp-config.php`
-
-## BUILD WEB DOCKER
-```
-docker build -t web .\percona-wordpress\wordpress
+kubectl create -f deployment-wordpress.yaml
+kubectl expose deployment web --type=LoadBalancer
 ```
 
-## LAUNCH WEB NODES
-```
-docker run --name web1 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
-docker run --name web2 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
-docker run --name web3 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
-```
 
-## ATTACH WEB NODES TO BACKEND NETWORK
-```
-docker network connect backend web1
-docker network connect backend web2
-docker network connect backend web3
-```
-
-## LAUNCH WEB PROXY
-```
-docker run -d --name proxyweb --net=frontend -v C:/Users/mariu/Documents/Training/percona-wordpress/proxyweb:/usr/local/etc/haproxy:ro -d -p 80:80  --link web1:web1 --link web2:web2 --link web3:web3 haproxy:1.7
-```
