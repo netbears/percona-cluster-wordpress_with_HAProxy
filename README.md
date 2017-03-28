@@ -32,11 +32,11 @@ docker run -d --name proxydb -v C:/Users/mariu/Documents/Training/percona-wordpr
 
 ## LAUNCH WEB NODES
 ```
-docker run --name web1 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
+docker run --name web1 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/percona-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
 
-docker run --name web2 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
+docker run --name web2 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/percona-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
 
-docker run --name web3 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
+docker run --name web3 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/percona-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
 ```
 
 ## ATTACH WEB NODES TO BACKEND NETWORK
