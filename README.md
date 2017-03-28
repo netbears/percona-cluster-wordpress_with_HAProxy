@@ -19,7 +19,9 @@ docker network create frontend
 ## LAUNCH DATABASE NODES
 ```
 docker run --name db1 -d -p 3306 --net=backend  -e MYSQL_ROOT_PASSWORD=root  -e CLUSTER_NAME=cluster  -e XTRABACKUP_PASSWORD=root percona/percona-xtradb-cluster
+
 docker run --name db2 -d -p 3306 --net=backend --link db1:db1 -e MYSQL_ROOT_PASSWORD=root  -e CLUSTER_NAME=cluster -e CLUSTER_JOIN=db1  -e XTRABACKUP_PASSWORD=root percona/percona-xtradb-cluster
+
 docker run --name db3 -d -p 3306 --net=backend --link db1:db1 -e MYSQL_ROOT_PASSWORD=root  -e CLUSTER_NAME=cluster -e CLUSTER_JOIN=db1  -e XTRABACKUP_PASSWORD=root percona/percona-xtradb-cluster
 ```
 
@@ -28,32 +30,20 @@ docker run --name db3 -d -p 3306 --net=backend --link db1:db1 -e MYSQL_ROOT_PASS
 docker run -d --name proxydb -v C:/Users/mariu/Documents/Training/percona-wordpress/proxydb:/usr/local/etc/haproxy:ro -d -p 3306:3306 --net=backend --link db1:db1 --link db2:db2 --link db3:db3 haproxy:1.7
 ```
 
-## POPULATE DATABASE
-```
-docker run --name web1 -d -p 80:80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp wordpress
-```
-
--> Complete UI install
-
--> COPY OUTPUT OF `docker exec -ti web1 cat /var/www/html/wp-config.php` TO  `.\percona-wordpress\wordpress\wp-config.php`
-
-## BUILD WEB DOCKER
-```
-docker build -t web .\percona-wordpress\wordpress
-```
-
 ## LAUNCH WEB NODES
 ```
-docker run --name web1 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
-docker run --name web2 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
-docker run --name web3 -d -p 80 --net=frontend --link proxydb:db1 -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw  web
+docker run --name web1 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
+
+docker run --name web2 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
+
+docker run --name web3 -d -p 80 --net=backend --link db1:db1 -e WORDPRESS_DB_HOST=db1 -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=root -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_TABLE_PREFIX=wp -v C:/Users/mariu/Documents/Training/galera-wordpress/wordpress/uploads:/var/www/html/wp-content/uploads:rw wordpress
 ```
 
 ## ATTACH WEB NODES TO BACKEND NETWORK
 ```
-docker network connect backend web1
-docker network connect backend web2
-docker network connect backend web3
+docker network connect frontend web1
+docker network connect frontend web2
+docker network connect frontend web3
 ```
 
 ## LAUNCH WEB PROXY
