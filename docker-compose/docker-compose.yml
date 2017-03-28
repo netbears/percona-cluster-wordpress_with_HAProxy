@@ -1,0 +1,152 @@
+version: '2'
+
+networks:
+  back-tier-compose:
+    driver: bridge
+  front-tier-compose:
+    driver: bridge
+
+
+services:
+  db1:
+    image: percona/percona-xtradb-cluster
+    container_name: db1
+    expose:
+      - 3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      CLUSTER_NAME: cluster
+      XTRABACKUP_PASSWORD: root
+    command:
+      - '--explicit_defaults_for_timestamp=1'
+    networks:
+      - back-tier-compose
+
+  db2:
+    image: percona/percona-xtradb-cluster
+    container_name: db2
+    links:
+      - db1:db1
+    expose:
+      - 3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      CLUSTER_NAME: root
+      XTRABACKUP_PASSWORD: root
+      CLUSTER_NAME: cluster
+    command:
+      - '--explicit_defaults_for_timestamp=1'
+    networks:
+      - back-tier-compose
+
+  db3:
+    image: percona/percona-xtradb-cluster
+    container_name: db3
+    links:
+      - db1:db1
+    expose:
+      - 3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      CLUSTER_NAME: root
+      XTRABACKUP_PASSWORD: root
+      CLUSTER_NAME: cluster
+    command:
+      - '--explicit_defaults_for_timestamp=1'
+    networks:
+      - back-tier-compose
+
+  proxydb:
+    image: haproxy:1.7
+    container_name: proxydb
+    volumes: 
+      - ./proxydb:/usr/local/etc/haproxy:ro
+    links:
+      - db1:db1
+      - db2:db2
+      - db3:db3
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    networks:
+      - back-tier-compose
+
+  web1:
+    image: wordpress
+    container_name: web1
+    expose:
+      - 80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db1
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp
+    links:
+      - db1:db1
+    volumes: 
+      - ./uploads:/var/www/html/wp-content/uploads:rw
+    networks:
+      - back-tier-compose
+      - front-tier-compose
+
+  web2:
+    image: wordpress
+    container_name: web2
+    expose:
+      - 80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db1
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp
+    links:
+      - db1:db1
+    volumes: 
+      - ./uploads:/var/www/html/wp-content/uploads:rw
+    networks:
+      - back-tier-compose
+      - front-tier-compose
+
+  web3:
+    image: wordpress
+    container_name: web3
+    expose:
+      - 80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db1
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp
+    links:
+      - db1:db1
+    volumes: 
+      - ./uploads:/var/www/html/wp-content/uploads:rw
+    networks:
+      - back-tier-compose
+      - front-tier-compose
+
+  proxyweb:
+    image: haproxy:1.7
+    container_name: proxyweb
+    volumes: 
+      - ./proxyweb:/usr/local/etc/haproxy:ro
+    links:
+      - web1:web1
+      - web2:web2
+      - web3:web3
+    expose:
+      - 80
+    ports:
+      - 80:80
+    networks:
+      - front-tier-compose
