@@ -5,7 +5,7 @@ This tutorial has been created in regards to 2 deployment methods : `docker-comp
 
 Please amend the volumes path according to your OS.
 
-`Docker-Advanced` presentation is available [here](path_to_file).
+`Docker-Advanced` presentation is available [here](https://github.com/NETBEARS-IT-Outsourcing/percona-cluster-wordpress_with_HAProxy/raw/master/Docker%20-%20Advanced.pdf).
 
 ## DOCKER COMPOSE
 
