@@ -1,9 +1,9 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: task-pv-volume-rw-many
+  name: task-pv-volume-rw-many-web
   labels:
-    type: local
+    type: local-web
 spec:
   capacity:
     storage: 3Gi
@@ -15,9 +15,9 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: task-pv-volume-rw-once
+  name: task-pv-volume-rw-once-db
   labels:
-    type: local
+    type: local-db
 spec:
   capacity:
     storage: 3Gi
@@ -33,6 +33,9 @@ metadata:
   labels:
     app: web
 spec:
+  selector:
+    matchLabels:
+      type: local-web
   accessModes:
     - ReadWriteMany
   resources:
@@ -46,6 +49,9 @@ metadata:
   labels:
     app: db-primary
 spec:
+  selector:
+    matchLabels:
+      type: local-db
   accessModes:
     - ReadWriteOnce
   resources:
