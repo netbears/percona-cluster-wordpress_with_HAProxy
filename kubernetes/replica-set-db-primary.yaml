@@ -19,6 +19,9 @@ spec:
       containers:
       - name: db-primary
         image: percona/percona-xtradb-cluster
+        volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: root
@@ -35,3 +38,7 @@ spec:
           name: repl-trf
         - containerPort: 4568
           name: incr-st-trn
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: db-prm-pv-claim
