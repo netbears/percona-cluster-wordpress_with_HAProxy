@@ -42,6 +42,11 @@ kubectl create namespace <namespace>
 kubectl config set-context $(kubectl config current-context) --namespace=<namespace>
 ```
 
+### Set persistence
+```
+kubectl create -f set-persistence.yaml
+```
+
 ### Create database
 ```
 kubectl create -f replica-set-db-primary.yaml
