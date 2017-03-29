@@ -12,9 +12,6 @@ spec:
       containers:
       - name: web
         image: wordpress:latest
-        volumeMounts:
-        - name: wordpress-persistent-storage
-          mountPath: /var/www/html/wp-content/uploads
         env:
         - name: WORDPRESS_DB_HOST
           value: dbcluster
@@ -28,7 +25,3 @@ spec:
           value: wp
         ports:
         - containerPort: 80
-      volumes:
-      - name: wordpress-persistent-storage
-        persistentVolumeClaim:
-          claimName: web-prm-pv-claim
