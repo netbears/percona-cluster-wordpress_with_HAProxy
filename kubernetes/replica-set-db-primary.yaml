@@ -1,3 +1,17 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-prm-pv-claim
+  labels:
+    app: db-primary
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
 apiVersion: extensions/v1beta1
 kind: ReplicaSet
 metadata:
@@ -39,7 +53,6 @@ spec:
         - containerPort: 4568
           name: incr-st-trn
       volumes:
-        - name: mysql-persistent-storage
-          gcePersistentDisk:
-            pdName: mysql-disk
-            fsType: ext4
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: db-prm-pv-claim
