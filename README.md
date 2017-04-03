@@ -7,6 +7,9 @@ Please amend the volumes path according to your OS.
 
 `Docker-Advanced` presentation is available [here](https://github.com/NETBEARS-IT-Outsourcing/percona-cluster-wordpress_with_HAProxy/raw/master/Docker%20-%20Advanced.pdf).
 
+## Provider
+This tutorial has been provided by [NETBEARS](https://netbears.ro/).
+
 ## DOCKER COMPOSE
 
 To create the stack, all you need to do is:
