@@ -8,7 +8,7 @@ Please amend the volumes path according to your OS.
 `Docker-Advanced` presentation is available [here](https://github.com/NETBEARS-IT-Outsourcing/percona-cluster-wordpress_with_HAProxy/raw/master/Docker%20-%20Advanced.pdf).
 
 ## Provider
-This tutorial has been provided by [NETBEARS](https://netbears.ro/).
+The tutorial and explanation is also posted on the [NETBEARS](https://netbears.com/blog/perconadb-wordpress-kubernetes/) company blog. You might want to check the website out for more tutorials like this.
 
 ## DOCKER COMPOSE
 
@@ -67,4 +67,8 @@ kubectl create -f deployment-wordpress.yaml
 kubectl expose deployment web --type=LoadBalancer
 ```
 
+## Final notes
+Need help implementing this?
+
+Feel free to contact us using [this form](https://netbears.com/#contact-form).
 
